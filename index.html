@@ -48,16 +48,16 @@
     <canvas id="canvas"></canvas>
     <h1>Lindberg's Piano</h1>
     <div class="buttons">
-        <a href="https://arlington.instructure.com/courses/322991" title="Canvas Piano Courses">
+        <a href="#" class="track-click" data-link="https://arlington.instructure.com/courses/322991" title="Canvas Piano Courses">
             <img src="https://c3.miracosta.edu/wp-content/uploads/2016/11/1Canvas-Logo-1024x1000.png" alt="Canvas Piano Courses">
         </a>
-        <a href="https://www.musictheory.net/" title="Music Theory">
+        <a href="#" class="track-click" data-link="https://www.musictheory.net/" title="Music Theory">
             <img src="https://www.musictheory.net/vc/24/0/64e93ece5818d5daebdf4a813fbd21cfb8a5f95d/favicon_256.png" alt="Music Theory">
         </a>
-        <a href="about-me.html" title="Learn About Me">
+        <a href="#" class="track-click" data-link="about-me.html" title="Learn About Me">
             <img src="https://static-00.iconduck.com/assets.00/bust-in-silhouette-emoji-1744x2048-62vgqxk9.png" alt="Learn About Me">
         </a>
-        <a href="javascript:void(document.head.appendChild(document.createElement('script')).src='https://cdn.jsdelivr.net/gh/Krazete/bookmarklets/piano.min.js')" title="Play Virtual Piano">
+        <a href="#" class="track-click" data-link="javascript:void(document.head.appendChild(document.createElement('script')).src='https://cdn.jsdelivr.net/gh/Krazete/bookmarklets/piano.min.js')" title="Play Virtual Piano">
             <img src="https://images.emojiterra.com/google/android-pie/512px/1f3b9.png" alt="Play Virtual Piano">
         </a>
     </div>
@@ -117,6 +117,38 @@
         resizeCanvas();
         createParticles();
         draw();
+
+        document.querySelectorAll('.track-click').forEach(function (element) {
+            element.addEventListener('click', function (e) {
+                e.preventDefault();
+                const link = this.getAttribute('data-link');
+                const name = prompt('Please enter first and last name to continue:');
+                if (name) {
+                    const date = new Date();
+                    const options = { timeZone: 'America/Chicago', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+                    const formattedDate = new Intl.DateTimeFormat('en-US', options).format(date);
+                    const data = {
+                        name: name,
+                        link: link,
+                        date: formattedDate
+                    };
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = 'teacher-check.html';
+                    for (const key in data) {
+                        if (data.hasOwnProperty(key)) {
+                            const input = document.createElement('input');
+                            input.type = 'hidden';
+                            input.name = key;
+                            input.value = data[key];
+                            form.appendChild(input);
+                        }
+                    }
+                    document.body.appendChild(form);
+                    form.submit();
+                }
+            });
+        });
     </script>
 </body>
 </html>
