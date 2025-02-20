@@ -132,11 +132,8 @@
                         link: link,
                         date: formattedDate
                     };
-                    // Send data to teacher-check.html without redirecting
-                    const xhr = new XMLHttpRequest();
-                    xhr.open('POST', 'teacher-check.html', true);
-                    xhr.setRequestHeader('Content-Type', 'application/json');
-                    xhr.send(JSON.stringify(data));
+                    // Save data to local storage
+                    localStorage.setItem('clickData', JSON.stringify(data));
 
                     // Open the link in a new tab
                     window.open(link, '_blank');
