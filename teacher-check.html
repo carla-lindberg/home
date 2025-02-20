@@ -3,143 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lindberg's Piano</title>
+    <title>Teacher Check</title>
     <style>
         body {
-            background-color: black;
-            color: white;
-            text-align: center;
+            background-color: pink;
             font-family: Arial, sans-serif;
-            margin: 0;
-            overflow: hidden;
             display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
+            align-items: center;
             height: 100vh;
-            z-index: 1;
+            margin: 0;
         }
-        #canvas {
+        .info-container {
+            background-color: white;
+            width: 80%;
+            height: 80%;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow-y: auto;
+        }
+        .info-item {
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+            position: relative;
+        }
+        .info-item:last-child {
+            border-bottom: none;
+        }
+        .info-item .delete {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            color: red;
         }
-        .buttons {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1;
-        }
-        .buttons img {
-            width: 50px;
-            height: 50px;
-            margin: 10px;
-        }
-        h1 {
-            margin-bottom: 20px;
-            z-index: 1;
+        .info-item span {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
         }
     </style>
 </head>
 <body>
-    <canvas id="canvas"></canvas>
-    <h1>Lindberg's Piano</h1>
-    <div class="buttons">
-        <a href="#" class="track-click" data-link="https://arlington.instructure.com/courses/322991" title="Canvas Piano Courses">
-            <img src="https://c3.miracosta.edu/wp-content/uploads/2016/11/1Canvas-Logo-1024x1000.png" alt="Canvas Piano Courses">
-        </a>
-        <a href="#" class="track-click" data-link="https://www.musictheory.net/" title="Music Theory">
-            <img src="https://www.musictheory.net/vc/24/0/64e93ece5818d5daebdf4a813fbd21cfb8a5f95d/favicon_256.png" alt="Music Theory">
-        </a>
-        <a href="#" class="track-click" data-link="about-me.html" title="Learn About Me">
-            <img src="https://static-00.iconduck.com/assets.00/bust-in-silhouette-emoji-1744x2048-62vgqxk9.png" alt="Learn About Me">
-        </a>
-        <a href="#" class="track-click" data-link="javascript:void(document.head.appendChild(document.createElement('script')).src='https://cdn.jsdelivr.net/gh/Krazete/bookmarklets/piano.min.js')" title="Play Virtual Piano">
-            <img src="https://images.emojiterra.com/google/android-pie/512px/1f3b9.png" alt="Play Virtual Piano">
-        </a>
+    <div class="info-container" id="infoContainer">
+        <!-- Information will be populated here -->
     </div>
 
     <script>
-        const canvas = document.getElementById('canvas');
-        const context = canvas.getContext('2d');
-        let particles = [];
-        const particleCount = 100;
-
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+        // Function to delete an info item
+        function deleteInfoItem(event) {
+            const item = event.target.parentElement;
+            item.remove();
         }
 
-        function createParticles() {
-            for (let i = 0; i < particleCount; i++) {
-                particles.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    vx: (Math.random() - 0.5) * 2,
-                    vy: (Math.random() - 0.5) * 2
-                });
+        // Function to create info items from local storage
+        function createInfoItems() {
+            const infoContainer = document.getElementById('infoContainer');
+            const data = JSON.parse(localStorage.getItem('clickData'));
+            if (data) {
+                const infoItem = document.createElement('div');
+                infoItem.className = 'info-item';
+                infoItem.innerHTML = `
+                    <span>NAME</span>${data.name}
+                    <span>DATE</span>${data.date}
+                    <span>LINK THEY CLICKED</span>${data.link}
+                    <span class="delete" onclick="deleteInfoItem(event)">X</span>
+                `;
+                infoContainer.appendChild(infoItem);
             }
         }
 
-        function draw() {
-            context.clearRect(0, 0, canvas.width, canvas.height);
-            for (let i = 0; i < particles.length; i++) {
-                const p = particles[i];
-                context.beginPath();
-                context.arc(p.x, p.y, 2, 0, Math.PI * 2);
-                context.fillStyle = 'white';
-                context.fill();
-                context.closePath();
-                for (let j = i + 1; j < particles.length; j++) {
-                    const p2 = particles[j];
-                    const dist = Math.hypot(p.x - p2.x, p.y - p2.y);
-                    if (dist < 100) {
-                        context.beginPath();
-                        context.moveTo(p.x, p.y);
-                        context.lineTo(p2.x, p2.y);
-                        context.strokeStyle = 'white';
-                        context.stroke();
-                        context.closePath();
-                    }
-                }
-                p.x += p.vx;
-                p.y += p.vy;
-                if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
-                if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
-            }
-            requestAnimationFrame(draw);
-        }
-
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
-        createParticles();
-        draw();
-
-        document.querySelectorAll('.track-click').forEach(function (element) {
-            element.addEventListener('click', function (e) {
-                e.preventDefault();
-                const link = this.getAttribute('data-link');
-                const name = prompt('Please enter first and last name to continue:');
-                if (name) {
-                    const date = new Date();
-                    const options = { timeZone: 'America/Chicago', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
-                    const formattedDate = new Intl.DateTimeFormat('en-US', options).format(date);
-                    const data = {
-                        name: name,
-                        link: link,
-                        date: formattedDate
-                    };
-                    // Save data to local storage
-                    localStorage.setItem('clickData', JSON.stringify(data));
-
-                    // Open the link in a new tab
-                    window.open(link, '_blank');
-                }
-            });
-        });
+        // Populate info items on page load
+        window.onload = createInfoItems;
     </script>
 </body>
 </html>
