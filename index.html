@@ -16,8 +16,6 @@
         #piano-decoration {
             width: 100%;
             height: 100px;
-            background: url('https://img.icons8.com/?size=512&id=oECahFP3ibID&format=png') no-repeat center;
-            background-size: contain;
         }
         h1 {
             font-size: 3em;
@@ -60,9 +58,8 @@
         .key {
             position: absolute;
             width: 64px;
-            height: 64px;
-            background: url('https://img.icons8.com/?size=512&id=oECahFP3ibID&format=png') no-repeat center;
-            background-size: contain;
+            height: 200px;
+            background-color: white;
         }
     </style>
 </head>
@@ -72,7 +69,7 @@
     <div class="button-container">
         <div class="button">
             <a href="https://arlington.instructure.com/courses/322991">
-                <img src="https://img.icons8.com/?size=512&id=oECahFP3ibID&format=png" alt="Piano Canvas">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Emojione_BW_1F3B9.svg/512px-Emojione_BW_1F3B9.svg.png" alt="Piano Canvas">
             </a>
             <div class="tooltip">Piano Canvas</div>
         </div>
@@ -100,14 +97,22 @@
             const audio = new Audio(`https://www.soundjay.com/button/sounds/button-` + (Math.floor(Math.random() * 7) + 1) + `.mp3`);
             audio.play();
         }
-        function createFlyingKey() {
-            const key = document.createElement('div');
-            key.classList.add('key');
-            key.style.left = Math.random() * 100 + 'vw';
-            key.style.top = Math.random() * 100 + 'vh';
-            key.style.animation = `fly-${key.id} 5s linear infinite`;
-            key.addEventListener('click', playRandomKeySound);
-            document.body.appendChild(key);
+        let keyCount = 0;
+const maxKeys = 3;
+
+function createFlyingKey() {
+    if (keyCount >= maxKeys) return;
+    const key = document.createElement('div');
+    key.classList.add('key');
+    key.style.left = Math.random() * 100 + 'vw';
+    key.style.top = Math.random() * 100 + 'vh';
+    key.addEventListener('click', playRandomKeySound);
+    document.body.appendChild(key);
+    keyCount++;
+}
+
+setInterval(createFlyingKey, 1000);
+
         }
 
         function animateKeys() {
