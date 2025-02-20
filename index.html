@@ -9,54 +9,60 @@
             background-color: black;
             color: white;
             font-family: Arial, sans-serif;
+            overflow: hidden;
             margin: 0;
             padding: 0;
-            overflow: hidden;
         }
         #piano-decoration {
             width: 100%;
-            height: 50px;
-            background: linear-gradient(to right, white 0%, white 7%, black 7%, black 8%, white 8%, white 15%, black 15%, black 16%, white 16%, white 23%, black 23%, black 24%, white 24%, white 31%, black 31%, black 32%, white 32%, white 39%, black 39%, black 40%, white 40%, white 47%, black 47%, black 48%, white 48%, white 55%, black 55%, black 56%, white 56%, white 63%, black 63%, black 64%, white 64%, white 71%, black 71%, black 72%, white 72%, white 79%, black 79%, black 80%, white 80%, white 87%, black 87%, black 88%, white 88%, white 95%, black 95%, black 96%, white 96%, white 100%);
+            height: 100px;
+            background: url('https://img.icons8.com/?size=512&id=oECahFP3ibID&format=png') no-repeat center;
+            background-size: contain;
         }
         h1 {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            font-size: 2em;
+            font-size: 3em;
+            margin: 20px;
         }
         .button-container {
-            position: absolute;
-            top: 80px;
-            left: 20px;
             display: flex;
+            align-items: center;
+            margin-left: 20px;
         }
         .button {
-            width: 50px;
-            height: 50px;
-            margin-right: 20px;
-            background-size: cover;
-            cursor: pointer;
+            margin-right: 15px;
             position: relative;
         }
-        .button:hover::after {
-            content: attr(data-tooltip);
+        .button img {
+            width: 64px;
+            height: 64px;
+        }
+        .button .tooltip {
+            visibility: hidden;
+            background-color: white;
+            color: black;
+            text-align: center;
+            border-radius: 5px;
+            padding: 5px;
             position: absolute;
+            z-index: 1;
             bottom: -30px;
             left: 50%;
-            transform: translateX(-50%);
-            background-color: rgba(255,255,255,0.8);
-            color: black;
-            padding: 5px;
-            border-radius: 5px;
-            white-space: nowrap;
+            margin-left: -50%;
+            width: 120px;
         }
-        .flying-key {
+        .button:hover .tooltip {
+            visibility: visible;
+        }
+        @keyframes fly {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-1000px); }
+        }
+        .key {
             position: absolute;
-            width: 30px;
-            height: 100px;
-            background-color: white;
-            border: 1px solid black;
-            cursor: pointer;
+            width: 64px;
+            height: 64px;
+            background: url('https://img.icons8.com/?size=512&id=oECahFP3ibID&format=png') no-repeat center;
+            background-size: contain;
         }
     </style>
 </head>
@@ -64,70 +70,71 @@
     <div id="piano-decoration"></div>
     <h1>Mrs. Lindberg's Piano</h1>
     <div class="button-container">
-        <div class="button" style="background-image: url('https://img.icons8.com/?size=512&id=oECahFP3ibID&format=png');" onclick="window.location.href='https://arlington.instructure.com/courses/322991'" data-tooltip="Piano Canvas"></div>
-        <div class="button" style="background-image: url('https://www.musictheory.net/vc/24/0/64e93ece5818d5daebdf4a813fbd21cfb8a5f95d/favicon_256.png');" onclick="window.location.href='https://www.musictheory.net/'"></div>
-        <div class="button" style="background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><circle cx="12" cy="8" r="4"/><path d="M12 14c-6.1 0-8 4-8 4v2h16v-2s-1.9-4-8-4z"/></svg>');" onclick="window.location.href='about.html'"></div>
-        <div class="button" style="background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M21 3H3v18h18V3zm-8 14H5v-2h8v2zm0-4H5v-2h8v2zm0-4H5V7h8v2zm6 8h-4V7h4v10z"/></svg>');" onclick="loadPianoScript()"></div>
+        <div class="button">
+            <a href="https://arlington.instructure.com/courses/322991">
+                <img src="https://img.icons8.com/?size=512&id=oECahFP3ibID&format=png" alt="Piano Canvas">
+            </a>
+            <div class="tooltip">Piano Canvas</div>
+        </div>
+        <div class="button">
+            <a href="https://www.musictheory.net/">
+                <img src="https://www.musictheory.net/vc/24/0/64e93ece5818d5daebdf4a813fbd21cfb8a5f95d/favicon_256.png" alt="Music Theory">
+            </a>
+            <div class="tooltip">Music Theory</div>
+        </div>
+        <div class="button">
+            <a href="about.html">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Emojione_BW_1F464.svg/512px-Emojione_BW_1F464.svg.png" alt="Learn About Me!">
+            </a>
+            <div class="tooltip">Learn About Me!</div>
+        </div>
+        <div class="button">
+            <a href="https://cdn.jsdelivr.net/gh/Krazete/bookmarklets/piano.min.js">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Emojione_BW_1F3B9.svg/512px-Emojione_BW_1F3B9.svg.png" alt="Play A Virtual Piano">
+            </a>
+            <div class="tooltip">Play A Virtual Piano</div>
+        </div>
     </div>
-
     <script>
-        function createFlyingKey() {
-            const key = document.createElement('div');
-            key.className = 'flying-key';
-            key.style.left = Math.random() * window.innerWidth + 'px';
-            key.style.top = Math.random() * window.innerHeight + 'px';
-            key.style.transform = `rotate(${Math.random() * 360}deg)`;
-            document.body.appendChild(key);
-
-            key.addEventListener('click', playRandomNote);
-
-            animateKey(key);
-        }
-
-        function animateKey(key) {
-            const dx = (Math.random() - 0.5) * 2;
-            const dy = (Math.random() - 0.5) * 2;
-            const dr = (Math.random() - 0.5) * 2;
-
-            function move() {
-                let x = parseFloat(key.style.left);
-                let y = parseFloat(key.style.top);
-                let r = parseFloat(key.style.transform.replace('rotate(', '').replace('deg)', ''));
-
-                x += dx;
-                y += dy;
-                r += dr;
-
-                if (x < 0 || x > window.innerWidth - 30) dx *= -1;
-                if (y < 0 || y > window.innerHeight - 100) dy *= -1;
-
-                key.style.left = x + 'px';
-                key.style.top = y + 'px';
-                key.style.transform = `rotate(${r}deg)`;
-
-                requestAnimationFrame(move);
-            }
-
-            move();
-        }
-
-        function playRandomNote() {
-            const notes = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
-            const note = notes[Math.floor(Math.random() * notes.length)];
-            const octave = Math.floor(Math.random() * 2) + 4;
-            const audio = new Audio(`https://www.piano-midi.de/mp3/piano_${note}${octave}.mp3`);
+        function playRandomKeySound() {
+            const audio = new Audio(`https://www.soundjay.com/button/sounds/button-` + (Math.floor(Math.random() * 7) + 1) + `.mp3`);
             audio.play();
         }
-
-        for (let i = 0; i < 10; i++) {
-            createFlyingKey();
+        function createFlyingKey() {
+            const key = document.createElement('div');
+            key.classList.add('key');
+            key.style.left = Math.random() * 100 + 'vw';
+            key.style.top = Math.random() * 100 + 'vh';
+            key.style.animation = `fly-${key.id} 5s linear infinite`;
+            key.addEventListener('click', playRandomKeySound);
+            document.body.appendChild(key);
         }
 
-        function loadPianoScript() {
-            const script = document.createElement('script');
-            script.src = 'https://cdn.jsdelivr.net/gh/Krazete/bookmarklets/piano.min.js';
-            document.body.appendChild(script);
+        function animateKeys() {
+            const keys = document.getElementsByClassName('key');
+            Array.from(keys).forEach(key => {
+                let directionX = Math.random() < 0.5 ? -1 : 1;
+                let directionY = Math.random() < 0.5 ? -1 : 1;
+                let speedX = Math.random() * 2 + 1;
+                let speedY = Math.random() * 2 + 1;
+
+                function moveKey() {
+                    let rect = key.getBoundingClientRect();
+                    if (rect.left <= 0 || rect.right >= window.innerWidth) directionX *= -1;
+                    if (rect.top <= 0 || rect.bottom >= window.innerHeight) directionY *= -1;
+
+                    key.style.left = (key.offsetLeft + speedX * directionX) + 'px';
+                    key.style.top = (key.offsetTop + speedY * directionY) + 'px';
+
+                    requestAnimationFrame(moveKey);
+                }
+
+                moveKey();
+            });
         }
+
+        setInterval(createFlyingKey, 1000);
+        setTimeout(animateKeys, 2000);
     </script>
 </body>
 </html>
