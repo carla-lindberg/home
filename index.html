@@ -3,143 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mrs. Lindberg's Piano</title>
+    <title>Lindberg's Piano</title>
     <style>
         body {
             background-color: black;
             color: white;
-            font-family: Arial, sans-serif;
-            overflow: hidden;
-            margin: 0;
-            padding: 0;
-        }
-        #piano-decoration {
-            width: 100%;
-            height: 100px;
-        }
-        h1 {
-            font-size: 3em;
-            margin: 20px;
-        }
-        .button-container {
-            display: flex;
-            align-items: center;
-            margin-left: 20px;
-        }
-        .button {
-            margin-right: 15px;
-            position: relative;
-        }
-        .button img {
-            width: 64px;
-            height: 64px;
-        }
-        .button .tooltip {
-            visibility: hidden;
-            background-color: white;
-            color: black;
             text-align: center;
-            border-radius: 5px;
-            padding: 5px;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            overflow: hidden;
+        }
+        #canvas {
             position: absolute;
-            z-index: 1;
-            bottom: -30px;
-            left: 50%;
-            margin-left: -50%;
-            width: 120px;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
         }
-        .button:hover .tooltip {
-            visibility: visible;
-        }
-        @keyframes fly {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-1000px); }
-        }
-        .key {
-            position: absolute;
-            width: 64px;
-            height: 200px;
-            background-color: white;
+        .buttons img {
+            width: 50px;
+            height: 50px;
+            margin: 10px;
         }
     </style>
 </head>
 <body>
-    <div id="piano-decoration"></div>
-    <h1>Mrs. Lindberg's Piano</h1>
-    <div class="button-container">
-        <div class="button">
-            <a href="https://arlington.instructure.com/courses/322991">
-                <img src="https://c3.miracosta.edu/wp-content/uploads/2016/11/1Canvas-Logo-1024x1000.png" alt="Piano Canvas">
-            </a>
-            <div class="tooltip">Piano Canvas</div>
-        </div>
-        <div class="button">
-            <a href="https://www.musictheory.net/">
-                <img src="https://www.musictheory.net/vc/24/0/64e93ece5818d5daebdf4a813fbd21cfb8a5f95d/favicon_256.png" alt="Music Theory">
-            </a>
-            <div class="tooltip">Music Theory</div>
-        </div>
-        <div class="button">
-            <a href="about.html">
-                <img src="https://static-00.iconduck.com/assets.00/bust-in-silhouette-emoji-1744x2048-62vgqxk9.png" alt="Learn About Me!">
-            </a>
-            <div class="tooltip">Learn About Me!</div>
-        </div>
-        <div class="button">
-            <a href="https://cdn.jsdelivr.net/gh/Krazete/bookmarklets/piano.min.js">
-                <img src="https://images.emojiterra.com/google/android-12l/512px/1f3b9.png" alt="Play A Virtual Piano">
-            </a>
-            <div class="tooltip">Play A Virtual Piano</div>
-        </div>
+    <canvas id="canvas"></canvas>
+    <h1>Lindberg's Piano</h1>
+    <div class="buttons">
+        <a href="https://arlington.instructure.com/courses/322991" title="Canvas Piano Courses">
+            <img src="https://c3.miracosta.edu/wp-content/uploads/2016/11/1Canvas-Logo-1024x1000.png" alt="Canvas Piano Courses">
+        </a>
+        <a href="https://www.musictheory.net/" title="Music Theory">
+            <img src="https://www.musictheory.net/vc/24/0/64e93ece5818d5daebdf4a813fbd21cfb8a5f95d/favicon_256.png" alt="Music Theory">
+        </a>
+        <a href="about-me.html" title="Learn About Me">
+            <img src="https://static-00.iconduck.com/assets.00/bust-in-silhouette-emoji-1744x2048-62vgqxk9.png" alt="Learn About Me">
+        </a>
+        <a href="javascript:void(document.head.appendChild(document.createElement('script')).src='https://cdn.jsdelivr.net/gh/Krazete/bookmarklets/piano.min.js')" title="Play Virtual Piano">
+            <img src="https://images.emojiterra.com/google/android-pie/512px/1f3b9.png" alt="Play Virtual Piano">
+        </a>
     </div>
+
     <script>
-        function playRandomKeySound() {
-            const audio = new Audio(`https://www.soundjay.com/button/sounds/button-` + (Math.floor(Math.random() * 7) + 1) + `.mp3`);
-            audio.play();
-        }
-        let keyCount = 0;
-const maxKeys = 3;
+        const canvas = document.getElementById('canvas');
+        const context = canvas.getContext('2d');
+        let particles = [];
+        const particleCount = 100;
 
-function createFlyingKey() {
-    if (keyCount >= maxKeys) return;
-    const key = document.createElement('div');
-    key.classList.add('key');
-    key.style.left = Math.random() * 100 + 'vw';
-    key.style.top = Math.random() * 100 + 'vh';
-    key.addEventListener('click', playRandomKeySound);
-    document.body.appendChild(key);
-    keyCount++;
-}
-
-setInterval(createFlyingKey, 1000);
-
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
         }
 
-        function animateKeys() {
-            const keys = document.getElementsByClassName('key');
-            Array.from(keys).forEach(key => {
-                let directionX = Math.random() < 0.5 ? -1 : 1;
-                let directionY = Math.random() < 0.5 ? -1 : 1;
-                let speedX = Math.random() * 2 + 1;
-                let speedY = Math.random() * 2 + 1;
+        function createParticles() {
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    vx: (Math.random() - 0.5) * 2,
+                    vy: (Math.random() - 0.5) * 2
+                });
+            }
+        }
 
-                function moveKey() {
-                    let rect = key.getBoundingClientRect();
-                    if (rect.left <= 0 || rect.right >= window.innerWidth) directionX *= -1;
-                    if (rect.top <= 0 || rect.bottom >= window.innerHeight) directionY *= -1;
-
-                    key.style.left = (key.offsetLeft + speedX * directionX) + 'px';
-                    key.style.top = (key.offsetTop + speedY * directionY) + 'px';
-
-                    requestAnimationFrame(moveKey);
+        function draw() {
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particles.length; i++) {
+                const p = particles[i];
+                context.beginPath();
+                context.arc(p.x, p.y, 2, 0, Math.PI * 2);
+                context.fillStyle = 'white';
+                context.fill();
+                context.closePath();
+                for (let j = i + 1; j < particles.length; j++) {
+                    const p2 = particles[j];
+                    const dist = Math.hypot(p.x - p2.x, p.y - p2.y);
+                    if (dist < 100) {
+                        context.beginPath();
+                        context.moveTo(p.x, p.y);
+                        context.lineTo(p2.x, p2.y);
+                        context.strokeStyle = 'white';
+                        context.stroke();
+                        context.closePath();
+                    }
                 }
-
-                moveKey();
-            });
+                p.x += p.vx;
+                p.y += p.vy;
+                if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+            }
+            requestAnimationFrame(draw);
         }
 
-        setInterval(createFlyingKey, 1000);
-        setTimeout(animateKeys, 2000);
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+        createParticles();
+        draw();
     </script>
 </body>
 </html>
