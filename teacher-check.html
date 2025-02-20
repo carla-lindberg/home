@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Check</title>
+    <style>
+        body {
+            background-color: pink;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .info-container {
+            background-color: white;
+            width: 80%;
+            height: 80%;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        .info-item {
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+            position: relative;
+        }
+        .info-item:last-child {
+            border-bottom: none;
+        }
+        .info-item .delete {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="info-container" id="infoContainer">
+        <!-- Information will be populated here -->
+    </div>
+
+    <script>
+        // Function to get query parameters from the URL
+        function getQueryParams() {
+            const params = {};
+            const queryString = window.location.search.substring(1);
+            const paramPairs = queryString.split('&');
+            paramPairs.forEach(pair => {
+                const [key, value] = pair.split('=');
+                params[decodeURIComponent(key)] = decodeURIComponent(value);
+            });
+            return params;
+        }
+
+        // Function to delete an info item
+        function deleteInfoItem(event) {
+            const item = event.target.parentElement;
+            item.remove();
+        }
+
+        // Function to create info items from query parameters
+        function createInfoItems() {
+            const params = getQueryParams();
+            const infoContainer = document.getElementById('infoContainer');
+            for (const key in params) {
+                if (params.hasOwnProperty(key)) {
+                    const infoItem = document.createElement('div');
+                    infoItem.className = 'info-item';
+                    infoItem.innerHTML = `${key}: ${params[key]} <span class="delete" onclick="deleteInfoItem(event)">X</span>`;
+                    infoContainer.appendChild(infoItem);
+                }
+            }
+        }
+
+        // Populate info items on page load
+        window.onload = createInfoItems;
+    </script>
+</body>
+</html>
