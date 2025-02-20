@@ -55,16 +55,23 @@
         // Function to delete an info item
         function deleteInfoItem(event) {
             const item = event.target.parentElement;
+            const dataIndex = item.getAttribute('data-index');
+            let clickData = JSON.parse(localStorage.getItem('clickData')) || [];
+            clickData.splice(dataIndex, 1);
+            localStorage.setItem('clickData', JSON.stringify(clickData));
             item.remove();
+            createInfoItems(); // Refresh the list
         }
 
         // Function to create info items from local storage
         function createInfoItems() {
             const infoContainer = document.getElementById('infoContainer');
-            const data = JSON.parse(localStorage.getItem('clickData'));
-            if (data) {
+            infoContainer.innerHTML = ''; // Clear existing items
+            const clickData = JSON.parse(localStorage.getItem('clickData')) || [];
+            clickData.forEach((data, index) => {
                 const infoItem = document.createElement('div');
                 infoItem.className = 'info-item';
+                infoItem.setAttribute('data-index', index);
                 infoItem.innerHTML = `
                     <span>NAME</span>${data.name}
                     <span>DATE</span>${data.date}
@@ -72,7 +79,7 @@
                     <span class="delete" onclick="deleteInfoItem(event)">X</span>
                 `;
                 infoContainer.appendChild(infoItem);
-            }
+            });
         }
 
         // Populate info items on page load
