@@ -22,6 +22,7 @@
             padding: 20px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             position: relative;
+            overflow-y: auto;
         }
         .info-item {
             border-bottom: 1px solid #ddd;
@@ -37,6 +38,11 @@
             right: 10px;
             cursor: pointer;
             color: red;
+        }
+        .info-item span {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
         }
     </style>
 </head>
@@ -68,14 +74,15 @@
         function createInfoItems() {
             const params = getQueryParams();
             const infoContainer = document.getElementById('infoContainer');
-            for (const key in params) {
+            const keys = ['name', 'date', 'time', 'link'];
+            keys.forEach(key => {
                 if (params.hasOwnProperty(key)) {
                     const infoItem = document.createElement('div');
                     infoItem.className = 'info-item';
-                    infoItem.innerHTML = `${key}: ${params[key]} <span class="delete" onclick="deleteInfoItem(event)">X</span>`;
+                    infoItem.innerHTML = `<span>${key.toUpperCase()}</span>${params[key]} <span class="delete" onclick="deleteInfoItem(event)">X</span>`;
                     infoContainer.appendChild(infoItem);
                 }
-            }
+            });
         }
 
         // Populate info items on page load
