@@ -59,7 +59,6 @@
             let clickData = JSON.parse(localStorage.getItem('clickData')) || [];
             clickData.splice(dataIndex, 1);
             localStorage.setItem('clickData', JSON.stringify(clickData));
-            item.remove();
             createInfoItems(); // Refresh the list
         }
 
@@ -75,3 +74,15 @@
                 infoItem.innerHTML = `
                     <span>NAME</span>${data.name}
                     <span>DATE</span>${data.date}
+                    <span>LINK THEY CLICKED</span>${data.link}
+                    <span class="delete" onclick="deleteInfoItem(event)">X</span>
+                `;
+                infoContainer.appendChild(infoItem);
+            });
+        }
+
+        // Populate info items on page load
+        window.onload = createInfoItems;
+    </script>
+</body>
+</html>
