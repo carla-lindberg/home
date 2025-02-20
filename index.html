@@ -132,20 +132,14 @@
                         link: link,
                         date: formattedDate
                     };
-                    const form = document.createElement('form');
-                    form.method = 'POST';
-                    form.action = 'teacher-check.html';
-                    for (const key in data) {
-                        if (data.hasOwnProperty(key)) {
-                            const input = document.createElement('input');
-                            input.type = 'hidden';
-                            input.name = key;
-                            input.value = data[key];
-                            form.appendChild(input);
-                        }
-                    }
-                    document.body.appendChild(form);
-                    form.submit();
+                    // Send data to teacher-check.html without redirecting
+                    const xhr = new XMLHttpRequest();
+                    xhr.open('POST', 'teacher-check.html', true);
+                    xhr.setRequestHeader('Content-Type', 'application/json');
+                    xhr.send(JSON.stringify(data));
+
+                    // Open the link in a new tab
+                    window.open(link, '_blank');
                 }
             });
         });
