@@ -132,8 +132,12 @@
                         link: link,
                         date: formattedDate
                     };
-                    // Save data to local storage
-                    localStorage.setItem('clickData', JSON.stringify(data));
+                    // Retrieve current data from local storage
+                    const currentData = JSON.parse(localStorage.getItem('clickData')) || [];
+                    // Add new data to the current data array
+                    currentData.push(data);
+                    // Save the updated data array back to local storage
+                    localStorage.setItem('clickData', JSON.stringify(currentData));
 
                     // Open the link in a new tab
                     window.open(link, '_blank');
